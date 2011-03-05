@@ -1,0 +1,32 @@
+Tests for the e-groups querier. Non-recursive queries
+
+    >>> from ldap_session import egroup_filter_generator
+    >>> non_rec = egroup_filter_generator('cert-d')
+    >>> type(l)
+    <type 'list'>
+    >>> filter(lambda x: type(x) != type(""), l)
+    []
+    >>> len(l) > 1
+    True
+
+Since cert-sec is a member of cert-d, l is won't list its members (it
+wasn't recursive)
+
+    >>> rec = egroup_filter_generator('cert-sec')
+    >>> type(l)
+    <type 'list'>
+    >>> s1 = set(rec)
+    >>> s2 = set(l)
+    >>> s1 - s2 == s1
+    True
+
+Recursive queries.
+
+    >>> l2 = egroup_filter_generator('cert-d', recursive=True)
+    >>> type(l2)
+    <type 'list'>
+    >>> len(l2) > len(l)
+    True
+    >>> s2=set(l2)
+    >>> s2 >= s1
+    True
