@@ -1,0 +1,21 @@
+Ensure we get a list with the 'hello' member of a list of
+dictionaries.
+
+    >>> from misc_utils import field_from_dictionary_list
+    >>> @field_from_dictionary_list('hello')
+    ... def f():
+    ...    return [{'hello':1, 'world':2},{'hello':3,'world':4}]
+    >>> [ n for n in f() ]
+    [1, 3]
+    >>> ''.join([str(n) for n in f()])
+    '13'
+
+Test the words_to_args decorator. Just be sure the string is converted
+into something useable.
+
+    >>> from misc_utils import comma_separated_function_args
+    >>> @comma_separated_function_args
+    ... def simple(*args):
+    ...	   return args
+    >>> simple("hello world, how are you?")
+    ('hello', 'world', 'how', 'are', 'you?')
