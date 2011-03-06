@@ -1,6 +1,6 @@
 Tests for the e-groups querier. Non-recursive queries
 
-    >>> from ldap_session import egroup_filter_generator
+    >>> from egrooup_filter_generator import egroup_filter_generator
     >>> non_rec = egroup_filter_generator('cert-d')
     >>> type(l)
     <type 'list'>

@@ -25,7 +25,3 @@ def egroup_filter_generator(*egroups, **params):
         fl = q[0]
     return fl
 
-if __name__ == '__main__':
-    import doctest
-    doctest.testfile('test/test_egroups.txt)
-
