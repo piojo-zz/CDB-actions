@@ -15,7 +15,7 @@ def field_from_dictionary_list(field):
 
 RX = re.compile('[,\s]+')
 
-def comma_separated_function_args(f):
+def words_to_args(f):
     def run(args):
         l = RX.split(args)
         return f(*l)

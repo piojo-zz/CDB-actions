@@ -16,8 +16,25 @@ def egroup_filter_generator(*egroups, **params):
         entry='memberOf%s=CN=%s,OU=e-groups,OU=Workgroups,DC=cern,DC=ch' % (
             rs, i)
         q.append(entry)
-    if len(q) > 1:
-        fl =  '(|' + ''.join(['(%s)' % i for i in q]) + ')'
-    else:
-        fl = q[0]
+    return q
+
+def egroup_filter_combiner(**kwargs):
+    included = []
+    excluded = []
+    if kwargs.has_key('include'):
+        l = egroup_filter_generator(kwargs['include'])
+        included.extend(l)
+    if kwargs.has_key('recursive-include'):
+        l = egroup_filter_generator(kwargs['recursive-include'], recursive=True)
+        include.extend(l)
+
+    if kwargs.has_key('exclude'):
+        l = egroup_filter_generator(kwargs['exclude'])
+        excluded.extend(l)
+    if kwargs.has_key('recursive-exclude'):
+        l = egroup_filter_generator(kwargs['recursive-exclude'], recursive=True)
+        excluded.extend(l)
+
+    fl = '&(|%s)(!(|%s))' % ( ''.join(['(%s)' % (i) for i in included]),
+                              ''.join(['(%s)' % (i) for i in excluded]))
     return fl

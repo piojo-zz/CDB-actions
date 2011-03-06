@@ -1,34 +1,16 @@
-Tests for the e-groups querier. Non-recursive queries
+Generate some ldap filters for describing arbitrary e-groups.
 
     >>> from egroup_filter_generator import egroup_filter_generator
-    >>> rs1 = egroup_filter_generator('cert-d')
-    >>> rs1
-    
-    >>> type(rs1)
-    <type 'list'>
-    >>> filter(lambda x: type(x) != type(""), rs1)
-    []
-    >>> len(l) > 1
-    True
+    >>> egroup_filter_generator('foo')
+    ['memberOf=CN=foo,OU=e-groups,OU=Workgroups,DC=cern,DC=ch']
+    >>> egroup_filter_generator('foo','bar')
+    ['memberOf=CN=foo,OU=e-groups,OU=Workgroups,DC=cern,DC=ch', 'memberOf=CN=bar,OU=e-groups,OU=Workgroups,DC=cern,DC=ch']
+    >>> egroup_filter_generator('foo', recursive=True)
+    ['memberOf:1.2.840.113556.1.4.1941:=CN=foo,OU=e-groups,OU=Workgroups,DC=cern,DC=ch']
 
-Since cert-sec is a member of cert-d, l is won't list its members (it
-wasn't recursive)
+Generate some ldap filters for generating combinations of different
+e-groups.
 
-    >>> rs2 = egroup_filter_generator('cert-sec')
-    >>> type(rs2)
-    <type 'list'>
-    >>> s1 = set(rs2)
-    >>> s2 = set(rs1)
-    >>> s1 - s2 == s1
-    True
-
-Recursive queries.
-
-    >>> l2 = egroup_filter_generator('cert-d', recursive=True)
-    >>> type(l2)
-    <type 'list'>
-    >>> len(l2) > len(l)
-    True
-    >>> s2=set(l2)
-    >>> s2 >= s1
-    True
+    >>> from egroup_filter_generator import egroup_filter_combiner
+    >>> egroup_filter_combiner(include='foo')
+    '&(|(memberOf=CN=foo,OU=e-groups,OU=Workgroups,DC=cern,DC=ch))(!(|))'

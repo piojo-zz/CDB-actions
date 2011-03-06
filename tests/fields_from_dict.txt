@@ -13,8 +13,8 @@ dictionaries.
 Test the words_to_args decorator. Just be sure the string is converted
 into something useable.
 
-    >>> from misc_utils import comma_separated_function_args
-    >>> @comma_separated_function_args
+    >>> from misc_utils import words_to_args
+    >>> @words_to_args
     ... def simple(*args):
     ...	   return args
     >>> simple("hello world, how are you?")
