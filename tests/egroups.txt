@@ -1,10 +1,10 @@
 Tests for the e-groups querier. Non-recursive queries
 
     >>> from egroup_filter_generator import egroup_filter_generator
-    >>> non_rec = egroup_filter_generator('cert-d')
-    >>> type(l)
+    >>> rs1 = egroup_filter_generator('cert-d')
+    >>> type(rs1)
     <type 'list'>
-    >>> filter(lambda x: type(x) != type(""), l)
+    >>> filter(lambda x: type(x) != type(""), rs1)
     []
     >>> len(l) > 1
     True
@@ -12,11 +12,11 @@ Tests for the e-groups querier. Non-recursive queries
 Since cert-sec is a member of cert-d, l is won't list its members (it
 wasn't recursive)
 
-    >>> rec = egroup_filter_generator('cert-sec')
-    >>> type(l)
+    >>> rs2 = egroup_filter_generator('cert-sec')
+    >>> type(rs2)
     <type 'list'>
-    >>> s1 = set(rec)
-    >>> s2 = set(l)
+    >>> s1 = set(rs2)
+    >>> s2 = set(rs1)
     >>> s1 - s2 == s1
     True
 
