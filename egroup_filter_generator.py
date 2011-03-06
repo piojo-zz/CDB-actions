@@ -2,9 +2,6 @@
 
 import os
 import sys
-import ldap
-from ldap_session import ldap_session
-
 
 def egroup_filter_generator(*egroups, **params):
     '''Generates an LDAP filter string for the list of egroups
@@ -24,5 +21,3 @@ def egroup_filter_generator(*egroups, **params):
     else:
         fl = q[0]
     return fl
-
-

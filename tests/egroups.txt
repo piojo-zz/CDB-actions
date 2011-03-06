@@ -2,6 +2,8 @@ Tests for the e-groups querier. Non-recursive queries
 
     >>> from egroup_filter_generator import egroup_filter_generator
     >>> rs1 = egroup_filter_generator('cert-d')
+    >>> rs1
+    
     >>> type(rs1)
     <type 'list'>
     >>> filter(lambda x: type(x) != type(""), rs1)
