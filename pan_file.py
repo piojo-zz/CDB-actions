@@ -17,7 +17,7 @@ class pan_file(object):
 
     def __iter__(self):
         '''The object iterates over its header.'''
-        self.file.seek(0,os.SEEK_SET)
+        self.file.seek(0,0)
         self.open = True
         return self
 
@@ -62,7 +62,7 @@ class pan_file(object):
         old = ''.join(self.file)
         if new == old:
             return False
-        self.file.seek(pos, os.SEEK_SET)
+        self.file.seek(pos, 0)
         self.file.truncate()
         self.file.write(new)
         self.file.close()
