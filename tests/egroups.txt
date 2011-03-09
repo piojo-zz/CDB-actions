@@ -1,4 +1,4 @@
-Generate some ldap filters for describing arbitrary e-groups.
+ Generate some ldap filters for describing arbitrary e-groups.
 
     >>> from egroup_filter_generator import egroup_filter_generator
     >>> egroup_filter_generator('foo')
@@ -12,5 +12,53 @@ Generate some ldap filters for generating combinations of different
 e-groups.
 
     >>> from egroup_filter_generator import egroup_filter_combiner
-    >>> egroup_filter_combiner(include='foo')
-    '&(|(memberOf=CN=foo,OU=e-groups,OU=Workgroups,DC=cern,DC=ch))(!(|))'
+    >>> egroup_filter_combiner(include=['foo'])
+    '(|(memberOf=CN=foo,OU=e-groups,OU=Workgroups,DC=cern,DC=ch))'
+    >>> egroup_filter_combiner(include=['foo'], recursive_include=['bar'], exclude=['baz'], recursive_exclude=['bleh'])
+    '(&(|(memberOf=CN=foo,OU=e-groups,OU=Workgroups,DC=cern,DC=ch)(memberOf:1.2.840.113556.1.4.1941:=CN=bar,OU=e-groups,OU=Workgroups,DC=cern,DC=ch))(!(|(memberOf=CN=baz,OU=e-groups,OU=Workgroups,DC=cern,DC=ch)(memberOf:1.2.840.113556.1.4.1941:=CN=bleh,OU=e-groups,OU=Workgroups,DC=cern,DC=ch))))'
+
+    >>> from ldap_session import ldap_session
+
+    >>> @ldap_session('xldap.cern.ch')
+    ... def f(*args, **kwargs):
+    ...     l = egroup_filter_generator(*args, **kwargs)
+    ...     return ''.join(l)
+    >>> l=f('cert-d')
+    >>> len(l) > 1
+    True
+    >>> len(l[1]) > 1
+    True
+    >>> l[1][1].__class__
+    <type 'tuple'>
+    >>> l[1][1][0].__class__
+    <type 'str'>
+    >>> l[1][1][1].__class__
+    <type 'dict'>
+
+Now, let's query some real e-groups
+
+    >>> from egroup_filter_generator import egroup_querier
+    >>> l=egroup_querier(recursive_include=['cert-d'])
+    >>> len(l)
+    2
+    >>> l[1].__class__
+    <type 'list'>
+    >>> len(l[1]) > 2
+    True
+    >>> l[1][1].__class__
+    <type 'tuple'>
+    >>> len(l[1][1])
+    2
+    >>> l[1][1][1].__class__
+    <type 'dict'>
+    >>> certd=set([ x[1]['sAMAccountName'][0] for x in l[1]])
+    >>> l = egroup_querier(recursive_include=['cert-d'], recursive_exclude=['cert-sec'])
+    >>> len(l)
+    2
+    >>> l[1].__class__
+    <type 'list'>
+    >>> len(l[1]) > 1
+    True
+    >>> certnos=set([x[1]['sAMAccountName'][0] for x in l[1]])
+    >>> certnos < certd
+    True

@@ -3,6 +3,8 @@
 import os
 import sys
 
+from ldap_session import ldap_session
+
 def egroup_filter_generator(*egroups, **params):
     '''Generates an LDAP filter string for the list of egroups
     given. It accepts an optional parameter, specifying whether the
@@ -21,20 +23,30 @@ def egroup_filter_generator(*egroups, **params):
 def egroup_filter_combiner(**kwargs):
     included = []
     excluded = []
-    if kwargs.has_key('include'):
-        l = egroup_filter_generator(kwargs['include'])
-        included.extend(l)
-    if kwargs.has_key('recursive-include'):
-        l = egroup_filter_generator(kwargs['recursive-include'], recursive=True)
-        include.extend(l)
 
-    if kwargs.has_key('exclude'):
-        l = egroup_filter_generator(kwargs['exclude'])
-        excluded.extend(l)
-    if kwargs.has_key('recursive-exclude'):
-        l = egroup_filter_generator(kwargs['recursive-exclude'], recursive=True)
-        excluded.extend(l)
+    for arg, recurse, dst_list in zip('include recursive_include exclude recursive_exclude'.split(' '),
+                                      [False, True, False, True],
+                                      [included, included, excluded, excluded]):
+        ls = kwargs.get(arg, [])
+        kw = { 'recursive': recurse}
+        dst_list.extend(egroup_filter_generator(*ls, **kw))
 
-    fl = '&(|%s)(!(|%s))' % ( ''.join(['(%s)' % (i) for i in included]),
-                              ''.join(['(%s)' % (i) for i in excluded]))
+    fl1 = fl2 = ''
+    if included:
+        fl1 = '(|%s)' % (''.join(['(%s)' %i for i in included]))
+        fl = fl1
+    if excluded:
+        fl2 = '(!(|%s))' % (''.join(['(%s)' %i for i in excluded]))
+        fl = fl2
+    if included and excluded:
+        fl = '(&%s%s)' % (fl1, fl2)
     return fl
+
+@ldap_session('xldap.cern.ch')
+def test_simple_filter(f):
+    return f    
+
+@ldap_session('xldap.cern.ch')
+def egroup_querier(**kwargs):
+    f =egroup_filter_combiner(**kwargs)
+    return f

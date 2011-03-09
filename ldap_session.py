@@ -33,8 +33,3 @@ class ldap_session(object):
             return self.connection.result(r)
         return decorated_generator
 
-# Pending: doctest!
-if __name__ == '__main__':
-    r, d = egroup_querier('cert-sec', recursive = True)
-    print '\n'.join([ i[1]['sAMAccountName'][0] for i in d])
-
