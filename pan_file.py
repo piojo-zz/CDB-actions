@@ -1,7 +1,6 @@
 import os
 import sys
 import re
-import re
 
 class pan_file(object):
     '''Pan file to be automatically regenerated'''
