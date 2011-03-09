@@ -1,6 +1,7 @@
 import os
 import sys
 import re
+import re
 
 class pan_file(object):
     '''Pan file to be automatically regenerated'''
@@ -67,3 +68,28 @@ class pan_file(object):
         self.file.write(new)
         self.file.close()
         return True
+
+def wrap_in_variable(name):
+    '''Decorator function, for wrapping the return value of a function
+into a Pan variable'''
+    rx = re.compile('\W+')
+    variable = rx.sub('_', name).upper()
+    def wrap(f):
+        def code_to_pan_variable(*args, **kwargs):
+            st = 'variable ' + variable + ' ?= '
+            rt = f(*args, **kwargs)
+
+            if rt.__class__ is list:
+                st +='list(\n' + ',\n'.join(["    '%s'" % (str(x)) for x in rt])
+                st += ');\n'
+            elif rt.__class__ is dict:
+                st += 'nlist(\n'
+                st += ',\n'.join(["    '%s', '%s'" % (k, str(v)) for k, v in rt.iteritems()])
+                st += ');\n'
+            else:
+                st += "'%s'" % rt
+                st += ';\n'
+            return st
+        return code_to_pan_variable
+    return wrap
+                                        
