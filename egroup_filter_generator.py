@@ -21,6 +21,15 @@ def egroup_filter_generator(*egroups, **params):
     return q
 
 def egroup_filter_combiner(**kwargs):
+    '''Creates a single filter string for querying for the members of a
+list of e-groups, excepting if they are in a list of excluded
+e-groups. Arguments:
+
+include: e-groups to include in the LDAP search
+exclude: e-groups whose members should not be returned in this search
+recursive_include: e-groups to include in the LDAP search, recursively
+recursive_exclude: e-groups whose members (or members of members)
+should not be returned in this search'''
     included = []
     excluded = []
 
