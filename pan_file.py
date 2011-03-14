@@ -2,6 +2,11 @@ import os
 import sys
 import re
 
+class pan_exception(Exception):
+    '''Exception to be risen by a header processor, to indicate
+    something goes wrong with it'''
+    pass
+
 class pan_file(object):
     '''Pan file to be automatically regenerated'''
     tpl_name_re = re.compile('^\w*\s*template\s+([-\w]+)\s*;$')

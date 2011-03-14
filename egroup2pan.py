@@ -1,27 +1,24 @@
 '''Module querying LDAP for e-group combinations'''
-
-import os
 import sys
-import ldap
-from ldap_session import ldap_session
-        
-@ldap_session('xldap.cern.ch')
-def egroup_filter_generator(*egroups, **params):
-    '''Generates an LDAP filter string for the list of egroups
-    given. It accepts an optional parameter, specifying whether the
-    query should recurse over nested e-groups or not.'''
-    if params.get('recursive'):
-        rs = ':1.2.840.113556.1.4.1941:'
-    else:
-        rs = ''
-    q = []
-    for i in egroups:
-        entry='memberOf%s=CN=%s,OU=e-groups,OU=Workgroups,DC=cern,DC=ch' % (
-            rs, i)
-        q.append(entry)
-    if len(q) > 1:
-        fl =  '(|' + ''.join(['(%s)' % i for i in q]) + ')'
-    else:
-        fl = q[0]
-    return fl
+import os
+import re
+from pan_file import pan_exception, wrap_in_variable
+from egroup_filter_generator import egroup_querier
 
+def egroup_string_to_ldap_query(string):
+    rx = re.compile("(\w+)=(\S+)")
+    d = dict()
+    var_name = []
+    for i in string.split(' '):
+        m = rx.match(i)
+        if not m:
+            raise pan_exception("Misconfigured egroup generator: " + i)
+        d[m.group(1)] = m.group(2).split(',')
+        var_name.extend(d[m.group(1)])
+
+    var_name = ''.join(var_name)
+    @wrap_in_variable(var_name)
+    def f():
+        egroup_querier(**d)
+
+    return f()

@@ -1,11 +1,14 @@
 #!/usr/bin/python
-'''Script that walks over a CDB Pan graph and commits any changes, if
-needed.
+# -*- encode: utf-8 -*-
+'''Script that walks over a CDB Pan checkout, performs actions on
+templates that declare them, and commits any changes, if needed.
 
 TODO:
 
 - Configure which actions map to which headers without modifying the
   code.
+
+Author: Luis Fernando Muñoz Mejías
 '''
 import sys
 import os
@@ -22,24 +25,26 @@ def do_commit(*arg):
 if __name__ == '__main__':
     o = OptionParser()
     o.add_option("-d", "--dir", dest="top",
-                 help="Top level of the CDB checkout",
-                 "-e", "--extension", dest="extension"
+                 help="Top level of the CDB checkout")
+    o.add_option("-e", "--extension", dest="extension"
                  help="Extension of the Pan templates (defaults to %default)",
                  default=".tpl")
     (opts, args) = o.parse_args()
-    changed = False
+    changed = []
     actions = init_actions()
     for root, dirs, files in os.walk(opts.top):
-        print "root", root
         for rm in 'CVS', '.svn', '.git':
             if rm in dirs:
                 dirs.remove(rm)
         for f in files:
             if f.endswith(opts.extension):
-                p = pan_file(os.path.join(root, f), **actions)
-                p.processs()
-                if p.write_file():
-                    changed = True
-    if changed:
-        do_commit(blah)
+                try:
+                    fullpath = os.path.join(root, f)
+                    p = pan_file(fullpath, **actions)
+                    p.processs()
+                    if p.write_file():
+                        changed.append(fullpath)
+                except pan_exception, e:
+                    print e
+        do_commit(changed)
     
