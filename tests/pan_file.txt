@@ -5,7 +5,7 @@ iterate over it. It's probably not thread-safe, but it keeps the user
 code simple.
 
     >>> import sys, os
-    >>> from pan_file import pan_file
+    >>> from pan_file import pan_file, wrap_in_variable
     >>> from tests.test_wrapper import testfile
     >>> p = pan_file("test.py")
     >>> f = testfile()
@@ -91,17 +91,14 @@ file do nothing.
     >>> p.process()
     >>> p.write_file()
     False
-
     >>> @wrap_in_variable('hello-12')
     ... def f(a):   
     ...     return a
     ... 
-    >>> print f([1,2])
-    variable HELLO_12 ?= list(
-        '1',
-        '2');
-    >>> print f(1)
-    variable HELLO_12 ?= '1';
-    >>> print f({'hello':1})
-    variable HELLO_12 ?= nlist(
-        'hello', '1');
+    >>> f([1,2])
+    "variable HELLO_12 ?= list(\n    '1',\n    '2');\n"
+    >>> f(1)
+    "variable HELLO_12 ?= '1';\n"
+    >>> f({'hello':1})
+    "variable HELLO_12 ?= nlist(\n    'hello', '1');\n"
+    

@@ -1,0 +1,17 @@
+The egroup2pan module is a quick and dirty hack for generating Pan
+variables out of e-groups contents. Names of the e-groups should be
+read from the template headers. Like this:
+
+    >>> from egroup2pan import egroup_string_to_pan_variable as egroup2pan
+    >>> import re
+    >>> var = egroup2pan('include=cert-d,cert-sec exclude=foo')
+
+
+In this case, the variable will look like
+variable CERT_D_CERT_SEC_FOO ?= list(...
+
+Completing the tests:    
+
+    >>> rx = re.compile("variable CERT_D_CERT_SEC_FOO \?= list\(\n    '.*',\n", re.M)
+    >>> rx.match(var) is not None
+    True
