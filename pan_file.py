@@ -63,7 +63,10 @@ class pan_file(object):
         if not self.body:
             return False
         pos = self.file.tell()
-        new = '\n'.join(self.body)
+        if type(self.body) == type(str()):
+            new = self.body
+        else:
+            new = '\n'.join(self.body)
         old = ''.join(self.file)
         if new == old:
             return False
@@ -96,4 +99,3 @@ into a Pan variable'''
             return st
         return code_to_pan_variable
     return wrap
-                                        
