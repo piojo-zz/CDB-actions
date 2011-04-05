@@ -10,7 +10,7 @@ class pan_exception(Exception):
 class pan_file(object):
     '''Pan file to be automatically regenerated'''
     tpl_name_re = re.compile('^\w*\s*template\s+([-\w]+)\s*;$')
-    act_re = re.compile('^@{\s*(\S+)\s*=\s*(.*)}$')
+    act_re = re.compile('^@{\s*(\S+?)\s*=\s*(.*)}$')
     def __init__(self, filename, **actions):
         '''Class constructor. Takes the name of the Pan file to open,
         and the a dictionary with the actions registered to each
