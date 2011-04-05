@@ -2,10 +2,9 @@ The egroup2pan module is a quick and dirty hack for generating Pan
 variables out of e-groups contents. Names of the e-groups should be
 read from the template headers. Like this:
 
-    >>> from egroup2pan import egroup_string_to_pan_variable as egroup2pan
+    >>> from egroup2pan import egroup_string_to_pan_variable as e2p
     >>> import re
-    >>> var = egroup2pan('include=cert-d,cert-sec exclude=foo')
-
+    >>> var = e2p('include=cert-d,cert-sec exclude=foo')
 
 In this case, the variable will look like
 variable CERT_D_CERT_SEC_FOO ?= list(...
@@ -15,3 +14,26 @@ Completing the tests:
     >>> rx = re.compile("variable CERT_D_CERT_SEC_FOO \?= list\(\n    '.*',\n", re.M)
     >>> rx.match(var) is not None
     True
+
+There are a few small functions in this module as well:
+
+egroups_in_string converts the "egroup" directive into something that
+can be fed to egroup_generator, like this:
+
+   >>> from egroup2pan import egroups_in_string
+   >>> egroups_in_string('include=certd,cert-sec exclude=foo')
+   {'exclude': ['foo'], 'include': ['certd', 'cert-sec']}
+
+The var_name function returns a Pan variable name based on the
+dictionary retourned by egroups_in_string:
+
+   >>> from egroup2pan import var_name, MAX_VAR_LENGTH
+   >>> d = egroups_in_string('include=certd,cert-sec exclude=foo')
+   >>> var_name(**d)
+   'CERT_SEC_CERTD_FOO'
+
+All identifiers have at most MAX_VAR_LENGTH characters:
+
+   >>> d['include'] = 'a'*2*MAX_VAR_LENGTH
+   >>> len(var_name(**d)) <=MAX_VAR_LENGTH
+   True
