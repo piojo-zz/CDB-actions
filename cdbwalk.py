@@ -61,6 +61,9 @@ if __name__ == '__main__':
     o.add_option("-e", "--extension", dest="extension",
                  help="Extension of the Pan templates (defaults to %default)",
                  default=".tpl")
+    o.add_option("-c", "--commit", dest="commit",
+                 help="Commit to CDB any changes",
+                 action="store_true") 
     (opts, args) = o.parse_args()
     changed = []
     actions = init_actions()
@@ -78,6 +81,5 @@ if __name__ == '__main__':
                         changed.append(fullpath)
                 except pan_exception, e:
                     print e
-    if changed:
+    if changed and opts.commit:
         do_commit(*changed)
-    
