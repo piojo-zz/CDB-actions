@@ -29,13 +29,15 @@ class pan_file(object):
     def next(self):
         if not self.open:
             raise StopIteration
-        for i in self.file:
+        i = self.file.readline()
+        while i:
             m = self.act_re.match(i)
             if m:
                 return (m.group(1), m.group(2))
             m = self.tpl_name_re.match(i)
             if m:
                 break
+            i = self.file.readline()
         self.open = False
         raise StopIteration
 
@@ -46,7 +48,11 @@ class pan_file(object):
         for action, args in self:
             try:
                 f = self.actions[action]
-                self.body.extend(f(args))
+                v = f(args)
+                if type(v) is str:
+                    self.body.append(v)
+                else:
+                    self.body.extend(v)
             except KeyError, e:
                 pass
 
@@ -63,10 +69,7 @@ class pan_file(object):
         if not self.body:
             return False
         pos = self.file.tell()
-        if type(self.body) == type(str()):
-            new = self.body
-        else:
-            new = '\n'.join(self.body)
+        new = '\n'.join(self.body)
         old = ''.join(self.file)
         if new == old:
             return False
