@@ -1,0 +1,27 @@
+* DESCRIPTION
+
+  This project aims to be integrated with [[http://www.quattor.org][Quattor]]. It allows to
+  associate arbitrary code with any annotation in the header of the
+  Pan templates.
+
+  The main usage is to generate a Pan template out of an external
+  source, f.i, contents of an LDAP server.
+
+* TODO [#A] Document the code properly[0/2]
+
+** TODO Some modules and functions lack documentation strings.
+
+** TODO The tests could have even clearer examples about the usage.
+
+* TODO [#B] Be more modular[0/3]
+
+** TODO Write a module to walk through the checkout
+
+** TODO Write separated modules for interacting with different CDB implementations?
+
+** TODO Put in a subdirectory any actions.
+
+* TODO [#C] Support user-plugged actions and user-specified actions[0/1]
+
+** TODO Add a configuration file with the headers, associated modules, and "top-level" callables.
+   
