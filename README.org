@@ -11,15 +11,27 @@
 
 ** TODO Some modules and functions lack documentation strings.
 
+   Maybe some day somebody will wish to debug or extend the
+   project. :)
+
 ** TODO The tests could have even clearer examples about the usage.
+
+   Maybe I'll want to remember how I did things some months ago.
 
 * TODO [#B] Be more modular[0/3]
 
 ** TODO Write a module to walk through the checkout
 
+   It is done in the main module now, and it's ugly and long.
+
 ** TODO Write separated modules for interacting with different CDB implementations?
 
+   CDB interactions are going to be way too special to share the code
+   with SCDB. :(
+
 ** TODO Put in a subdirectory any actions.
+
+   To ease plugging of actions.
 
 * TODO [#C] Support user-plugged actions and user-specified actions[0/1]
 
