@@ -1,0 +1,6 @@
+# YAML file for tests. It will make the 'actions' function associate
+# header "foo" with os.open()
+---
+foo:
+  module: lkjhljh
+  callable: o978o7tyoluh

@@ -1,0 +1,39 @@
+This module is used for traversing a CDB checkout. Is meant to be the
+main program, but it contains functions and classes that may be used
+in other contexts, namely:
+
+- log() is a trivial logger class. May be replaced by log4python in a
+  future iteration. Essentially, it will print stuff iff it is created
+  with verbose=True argument.
+
+    >>> from cdbwalk import log
+    >>> l = log()
+    >>> l('Hello, world') # Prints nothing
+    >>> l = log(True)
+    >>> l('Hello, world')
+    Hello, world
+
+- actions() reads a configuration file (written in YAML) and generates
+  a dictionary associating a header with a function to be
+  executed. Such function is defined as a module to import and the
+  callable inside that module, in a form:
+
+  header:
+    module: module to import
+  callable: function inside the module.
+
+    >>> from cdbwalk import actions
+    >>> actions('tests/cfg/valid.yaml')
+    {'foo': <built-in function exit>}
+
+And we get nice exceptions if we want to associate a module with
+some code that doesn't exist:
+ 
+    >>> try:
+    ...     actions('tests/cfg/invalid.yaml')
+    ... except ImportError:
+    ...     pass
+    ... else:
+    ...     print "No error???"
+    ...
+
