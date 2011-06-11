@@ -40,8 +40,8 @@ class log(object):
         if self.verbose:
             print ' '.join(kwargs)
 
-
-if __name__ == '__main__':
+def parse_opts():
+    '''Parses the options from the command line'''
     o = OptionParser()
     o.add_option("-d", "--dir", dest="top",
                  help="Top level of the CDB checkout")
@@ -54,7 +54,13 @@ if __name__ == '__main__':
     o.add_option("-v", "--verbose", dest="verbose",
                  help="Verbose",
                  action="store_true")
+    o.add_option("--cfg", "--config-file", dest="cfg",
+                 help="Configuration file mapping headers with code to be executed")
     (opts, args) = o.parse_args()
+    return opts
+
+if __name__ == '__main__':
+    opts = parse_opts()
     lg = log(opts.verbose)
     changed = []
     actions = init_actions()
