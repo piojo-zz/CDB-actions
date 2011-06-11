@@ -7,12 +7,15 @@
   The main usage is to generate a Pan template out of an external
   source, f.i, contents of an LDAP server.
 
-* TODO [#A] Document the code properly[0/2]
+* TODO [#A] Document the code properly[1/2]
 
-** TODO Some modules and functions lack documentation strings.
+** DONE Some modules and functions lack documentation strings.
 
    Maybe some day somebody will wish to debug or extend the
    project. :)
+
+   In any case, now only operations that *require* access to CDB
+   lack automated testing, as it doesn't make sense out of CERN.
 
 ** TODO The tests could have even clearer examples about the usage.
 
@@ -33,7 +36,7 @@
 
    To ease plugging of actions.
 
-* TODO [#C] Support user-plugged actions and user-specified actions[0/1]
+* DONE [#C] Support user-plugged actions and user-specified actions[1/1]
 
-** TODO Add a configuration file with the headers, associated modules, and "top-level" callables.
+** DONE Add a configuration file with the headers, associated modules, and "top-level" callables.
    
