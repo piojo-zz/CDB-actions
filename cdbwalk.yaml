@@ -1,0 +1,7 @@
+# Configuration file for the cdbwalk.py script.
+---
+# An "egroups" header is tranlsated to a Pan variable listing all the
+# participating e-groups.
+egroups:
+  module: egroup2pan
+  callable: egroup_string_to_pan_variable
