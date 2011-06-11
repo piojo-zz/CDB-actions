@@ -14,8 +14,8 @@
    Maybe some day somebody will wish to debug or extend the
    project. :)
 
-   In any case, now only operations that *require* access to CDB
-   lack automated testing, as it doesn't make sense out of CERN.
+   In any case, now only operations that *require* access to CDB lack
+   automated testing, as it doesn't make sense out of CERN.
 
 ** TODO The tests could have even clearer examples about the usage.
 
