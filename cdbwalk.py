@@ -18,19 +18,19 @@ from pan_file import pan_file, pan_exception
 from optparse import OptionParser
 import subprocess
 from egroup2pan import egroup_string_to_pan_variable as egroup2pan
+from cdb import cdb_error, do_commit
+import yaml
 
-class cdb_error(Exception):
-    '''Exception for errors dealing with CDB'''
-    def __init__(self, descro, process):
-        self.msg = descro
-        self.process = process
-
-    def __str__(self):
-        lines = [self.msg, "\nStandard output:\n"]
-        lines.extend(l for l in self.process.stdout)
-        lines.append("\nStandard error:\n")
-        lines.extend(l for l in self.process.stderr)
-        return "".join(lines)
+def actions(filename):
+    y = yaml.load(file(filename))
+    d = dict()
+    for header, action in y.items():
+        try:
+            m = sys.modules[action['module']]
+        except KeyError:
+            m = __import__(action['module'])
+        d[header] = m.__dict__[action['callable']]
+    return d
 
 class log(object):
     '''Log object for displaying information'''
@@ -40,26 +40,6 @@ class log(object):
         if self.verbose:
             print ' '.join(kwargs)
 
-def init_actions():
-    '''Initialises the dictionary of actions'''
-    d = {"egroups" : egroup2pan}
-    return d
-
-def do_commit(*arg):
-    '''Commits the modified templates to CDB'''
-    cdbcmd = ('update ' + ' '.join(arg) +
-              '; commit -c "Upgrade templates that come from external sources')
-    cdbcall = [ 'cdbop', '--server', 'cdbserv', '--cfgfile', '/dev/fd/0',
-                '--command',  cdbcmd]
-
-    p = subprocess.Popen(cdbcall, stdin=subprocess.PIPE,
-                         stdout=subprocess.PIPE,
-                         stderr=subprocess.PIPE)
-    if not os.environ.has_key('CDB_USER'):
-        p.stdin.write('use-krb5=1\n')
-    p.stdin.close()
-    if p.wait() != 0:
-        raise cdb_error("Failed to commit to CDB", p)
 
 if __name__ == '__main__':
     o = OptionParser()
