@@ -2,14 +2,17 @@
 import os
 import sys
 from distutils.core import setup
+from glob import glob
 
 version=open('.version').readline().strip()
 
 setup(name='cdbwalk',
       version=version,
-      py_modules=['cdb', 'egroup2pan', 'egroup_filter_generator',
-                  '__init__', 'ldap_session', 'misc_utils', 'pan_file'],
+      py_modules=[x[:-3] for x in glob('*.py')],
       url='http://www.quattor.org',
       author='Luis Fernando Muñoz Mejías',
-      author_email='lfmunozmejias@gmail.com'
+      author_email='lfmunozmejias@gmail.com',
+      scripts=['cdbwalk.py'],
+      data_files=[('/etc', glob('*.yaml'))],
+      license='Apache2'
       )
